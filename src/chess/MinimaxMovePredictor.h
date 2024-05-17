@@ -6,6 +6,7 @@
 #define NEURALNETWORK_MINIMAXMOVEPREDICTOR_H
 
 #include <vector>
+#include <map>
 #include <string>
 #include <algorithm>
 #include <cmath>

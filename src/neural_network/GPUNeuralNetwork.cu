@@ -78,7 +78,7 @@ void GPUNeuralNetwork::createArrays() {
         cudaMalloc((void**)&weights[i], sizes[i] * sizes[i + 1] * sizeof(float));
         cudaMalloc((void**)&deltWeights[i], sizes[i] * sizes[i + 1] * sizeof(float));
         doZerosGPU(deltWeights[i], sizes[i] * sizes[i + 1]);
-        float edge = 3.0f * sqrt(1.0 / (sizes[i] + sizes[i + 1]));
+        float edge = 1.85f * sqrt(1.0 / (sizes[i] + sizes[i + 1]));
         float *temp = new float[sizes[i] * sizes[i + 1]];
         doNormalRandom(temp, sizes[i] * sizes[i + 1], 0, edge);
         cudaMemcpy(weights[i], temp, sizes[i] * sizes[i + 1] * sizeof(float), cudaMemcpyHostToDevice);

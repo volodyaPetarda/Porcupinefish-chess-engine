@@ -2,6 +2,15 @@ cmake_minimum_required(VERSION 3.27)
 project(NeuralNetwork CUDA CXX)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+find_package(Qt5 COMPONENTS
+        Core
+        Gui
+        Widgets
+        REQUIRED)
 
 add_executable(NeuralNetwork main.cpp
         src/neural_network/CPUNeuralNetwork.cpp
@@ -20,10 +29,17 @@ add_executable(NeuralNetwork main.cpp
         src/linear_algebra/GPULinearAlgebra.h
         test.cu
         test.h
-        src/chess/MovePredictor.h
         src/chess/MinimaxMovePredictor.cpp
         src/chess/MinimaxMovePredictor.h
         src/chess/NeuralMinimaxMovePredictor.cpp
         src/chess/NeuralMinimaxMovePredictor.h
+        ui/mainwindow.cpp
+        ui/mainwindow.h
+        ui/mainwindow.ui
+        ui/Button.cpp
+        ui/Button.h
 )
-target_link_libraries(NeuralNetwork -lcublas -lcurand)
+target_link_libraries(NeuralNetwork -lcublas -lcurand
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Widgets)

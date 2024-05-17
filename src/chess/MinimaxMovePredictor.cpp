@@ -3,6 +3,7 @@
 //
 
 #include "MinimaxMovePredictor.h"
+std::map<unsigned long long, float> used;
 
 std::vector<std::string> MinimaxMovePredictor::getMoves(Board board) {
     std::vector<std::string> moves;
@@ -136,6 +137,9 @@ float MinimaxMovePredictor::maxi(float alpha, float beta, Board board, int depth
     if(isEnd == 3)
         return 0.5;
 
+    unsigned long long hash = board.hashBoard();
+    if(used.find(hash) != used.end())
+        return used[hash];
     if(depth == 0) {
         float ev = evaluateBoard(board);
         float p = std::min(ev, 1.0f - ev) * prior;
@@ -156,6 +160,7 @@ float MinimaxMovePredictor::maxi(float alpha, float beta, Board board, int depth
         if(beta <= alpha)
             break;
     }
+    used[hash] = mx;
     return mx;
 }
 
@@ -169,6 +174,9 @@ float MinimaxMovePredictor::mini(float alpha, float beta, Board board, int depth
     if(isEnd == 3)
         return 0.5;
 
+    unsigned long long hash = board.hashBoard();
+    if(used.find(hash) != used.end())
+        return used[hash];
     if(depth == 0) {
         float ev = evaluateBoard(board);
         float p = std::min(ev, 1.0f - ev) * prior;
@@ -190,10 +198,12 @@ float MinimaxMovePredictor::mini(float alpha, float beta, Board board, int depth
         if(beta <= alpha)
             break;
     }
+    used[hash] = mn;
     return mn;
 }
 
 std::string MinimaxMovePredictor::predictMove(Board board, int DEPTH, float priority) {
+    used.clear();
     std::cout<<"here depth "<<DEPTH<<'\n';
     auto start = clock();
     bool isWhite = board.getIsWhiteMove();
@@ -225,7 +235,7 @@ std::string MinimaxMovePredictor::predictMove(Board board, int DEPTH, float prio
             nboard.move(m);
             float val = maxi(-1e36, mx, nboard, DEPTH, i * MOVE_PRIORITY);
 //            val -= (moves.size() - i) * MOVE_PRIORITY;
-            std::cout<<m<<": "<<val<<'\n';
+//            std::cout<<m<<": "<<val<<'\n';
             if(i == 0 || val < mx){
                 mx = val;
                 ind = i;
@@ -233,8 +243,7 @@ std::string MinimaxMovePredictor::predictMove(Board board, int DEPTH, float prio
         }
     }
     auto finish = clock();
-    std::cout<<"time "<<finish - start<<"\n";
-    if(finish - start < 3.0f * CLOCKS_PER_SEC)
+    if(finish - start < 1.0f * CLOCKS_PER_SEC)
         return predictMove(board, DEPTH + 1, priority);
     return moves[ind];
 }

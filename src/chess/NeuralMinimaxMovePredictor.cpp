@@ -14,7 +14,7 @@ std::vector<std::string> NeuralMinimaxMovePredictor::getMoves(Board board) {
     const int UND = 1000, MOVES = 1000;
     for(int i = 0; i < UND; i++){
         int ind = getMaxIndex(chances, 64 * 64);
-        if(chances[ind] < 0.0001f)
+        if(chances[ind] < 0.001f)
             break;
         chances[ind] = 0;
         std::string move = Board::numberToUci(ind);
@@ -28,14 +28,14 @@ std::vector<std::string> NeuralMinimaxMovePredictor::getMoves(Board board) {
         }
     }
 
-//    for(int i = 0; i < 64 * 64; i++){
-//        std::string move = Board::numberToUci(i);
-//        if(!board.isPossibleMove(move))
-//            continue;
-//        if(inResult.contains(move))
-//            continue;
-//        result.push_back(move);
-//    }
+    for(int i = 0; i < 64 * 64; i++){
+        std::string move = Board::numberToUci(i);
+        if(!board.isPossibleMove(move))
+            continue;
+        if(inResult.contains(move))
+            continue;
+        result.push_back(move);
+    }
 
     delete[] x;
     delete[] chances;
